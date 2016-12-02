@@ -10,6 +10,10 @@ import UIKit
 import EventKit
 import EventKitUI
 
+/**
+ * Calender interaction https://developer.apple.com/library/content/documentation/DataManagement/Conceptual/EventKitProgGuide/Introduction/Introduction.html
+ * Registering for Notifications https://developer.apple.com/library/content/documentation/DataManagement/Conceptual/EventKitProgGuide/ObservingChanges/ObservingChanges.html#//apple_ref/doc/uid/TP40009765-CH4-SW1
+ */
 class ViewController: UIViewController {
     
     let eventStore = EKEventStore()
@@ -25,7 +29,6 @@ class ViewController: UIViewController {
     func storeChanged(_ nsNotification: NSNotification) {
         print("Method invoked")
         print("Event name \(nsNotification)")
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -35,11 +38,6 @@ class ViewController: UIViewController {
     func  saveCalendar() {
         let calender = EKCalendar(for: .event, eventStore: eventStore)
         calender.title = "Furiend"
-        // calender.allowedEntityTypes
-        // let sourcesInEventStore = eventStore.sources
-        //        calender.source = sourcesInEventStore.filter { (source: EKSource) -> Bool in
-        //            source.sourceType.rawValue == EKSourceType.local.rawValue
-        //            }.first!
         calender.source = eventStore.defaultCalendarForNewEvents.source
         do {
             let calendarIdentifier = userDefaults.string(forKey: "EventTrackerPrimaryCalendar")
@@ -77,13 +75,10 @@ class ViewController: UIViewController {
             (accessGranted: Bool, error: Error?) in
             if accessGranted == true {
                 DispatchQueue.main.async(execute: {
-                    // self.loadCalendars()
-                    // self.refreshTableView()
                     self.saveCalendar()
                 })
             } else {
                 DispatchQueue.main.async(execute: {
-                    // self.needPermissionView.fadeIn()
                 })
             }
         })
@@ -92,7 +87,6 @@ class ViewController: UIViewController {
     func loadEvents() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        
         // Create start and end date NSDate instances to build a predicate for which events to select
         let startDate = dateFormatter.date(from: "2016-01-01")
         let endDate = dateFormatter.date(from: "2016-12-31")
