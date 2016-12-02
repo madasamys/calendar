@@ -99,8 +99,8 @@ class ViewController: UITableViewController {
     }
     
     func storeChanged(_ nsNotification: NSNotification) {
-        // print("Method invoked")
          print("Event name \(nsNotification.userInfo?["EKEventStoreChangedObjectIDsUserInfoKey"])")
+         self.loadEvents()
     }
     
     func getDateFormatter() -> DateFormatter {
@@ -114,7 +114,6 @@ class ViewController: UITableViewController {
 extension ViewController: EKEventEditViewDelegate {
     
     func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
-        loadEvents()
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -183,8 +182,7 @@ extension ViewController {
         return UIAlertAction(title: "Yes", style: .default, handler: {(alert: UIAlertAction!) -> Void in
             do {
                 try self.eventStore.remove(event, span: .thisEvent, commit: true)
-                self.loadEvents()
-                self.tableView.reloadData()
+               
             } catch {
                 print("Error occurred while deleting event " + event.title)
             }
