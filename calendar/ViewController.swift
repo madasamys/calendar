@@ -66,7 +66,7 @@ class ViewController: UITableViewController {
                 eventController.eventStore = self.eventStore
                 eventController.editViewDelegate = self
                 let event = EKEvent(eventStore: self.eventStore)
-                event.title = "Foo"
+                event.title = ""
                 event.calendar = calendar!
                 eventController.event = event
                 self.present(eventController, animated: true, completion: nil)
@@ -74,6 +74,8 @@ class ViewController: UITableViewController {
             }
         })
     }
+    
+    
     
     func requestAccessToCalendar() {
         eventStore.requestAccess(to: EKEntityType.event, completion: {
@@ -104,6 +106,14 @@ class ViewController: UITableViewController {
         }
     }
     
+    func getDateFormatter() -> DateFormatter {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter
+    }
+    
+    
+    
 }
 
 extension ViewController: EKEventEditViewDelegate {
@@ -128,8 +138,7 @@ extension ViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = events[indexPath.row].title
-        cell.detailTextLabel?.text = String(describing: events[indexPath.row].startDate)
+        cell.textLabel?.text = events[indexPath.row].title + " on " + getDateFormatter().string(from: events[indexPath.row].startDate)
         return cell
     }
     
@@ -139,7 +148,20 @@ extension ViewController {
         return [deleteAction]
     }
     
-    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        eventStore.requestAccess(to: EKEntityType.event, completion: {
+            (accessGranted: Bool, error: Error?) in
+            if accessGranted == true {
+                let eventController = EKEventEditViewController()
+                eventController.eventStore = self.eventStore
+                eventController.editViewDelegate = self
+                eventController.event = self.events[indexPath.row]
+                self.present(eventController, animated: true, completion: nil)
+            } else {
+            }
+        })
+
+    }
 }
 // MARK: - Delete action
 extension ViewController {
