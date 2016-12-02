@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -34,13 +35,40 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="60" id="Rnw-VI-0DI">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="60" id="Rnw-VI-0DI" customClass="CalendarCell" customModule="calendar" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="56" width="375" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Rnw-VI-0DI" id="vdW-nv-4sL">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="59"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pCT-vt-CeU">
+                                            <rect key="frame" x="13" y="8" width="349" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YM9-cW-CqT">
+                                            <rect key="frame" x="23" y="30" width="339" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="pCT-vt-CeU" firstAttribute="top" secondItem="vdW-nv-4sL" secondAttribute="topMargin" id="3pv-vM-q3w"/>
+                                        <constraint firstItem="YM9-cW-CqT" firstAttribute="top" secondItem="pCT-vt-CeU" secondAttribute="bottom" constant="1" id="AYJ-sd-OiW"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="pCT-vt-CeU" secondAttribute="trailing" constant="5" id="EGf-fL-Cv9"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="YM9-cW-CqT" secondAttribute="trailing" constant="5" id="YjV-Qi-h9s"/>
+                                        <constraint firstItem="YM9-cW-CqT" firstAttribute="leading" secondItem="vdW-nv-4sL" secondAttribute="leadingMargin" constant="15" id="cjB-Vy-a0Z"/>
+                                        <constraint firstItem="pCT-vt-CeU" firstAttribute="leading" secondItem="vdW-nv-4sL" secondAttribute="leadingMargin" constant="5" id="iJc-cM-8sm"/>
+                                        <constraint firstItem="YM9-cW-CqT" firstAttribute="bottom" secondItem="vdW-nv-4sL" secondAttribute="bottomMargin" id="qog-xM-aYN"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="eventDateLabel" destination="pCT-vt-CeU" id="AlW-pf-krX"/>
+                                    <outlet property="locationLabel" destination="YM9-cW-CqT" id="KjE-zg-iLN"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

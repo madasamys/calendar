@@ -23,6 +23,8 @@ class ViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         requestAccessToCalendar()
+        tableView.estimatedRowHeight = 60
+        tableView.rowHeight = UITableViewAutomaticDimension
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -75,8 +77,6 @@ class ViewController: UITableViewController {
         })
     }
     
-    
-    
     func requestAccessToCalendar() {
         eventStore.requestAccess(to: EKEntityType.event, completion: {
             (accessGranted: Bool, error: Error?) in
@@ -112,8 +112,6 @@ class ViewController: UITableViewController {
         return dateFormatter
     }
     
-    
-    
 }
 
 extension ViewController: EKEventEditViewDelegate {
@@ -137,8 +135,9 @@ extension ViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = events[indexPath.row].title + " on " + getDateFormatter().string(from: events[indexPath.row].startDate)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CalendarCell
+        cell.eventDateLabel.text = getDateFormatter().string(from: events[indexPath.row].startDate)
+        cell.locationLabel.text = events[indexPath.row].location
         return cell
     }
     
@@ -160,9 +159,9 @@ extension ViewController {
             } else {
             }
         })
-
     }
 }
+
 // MARK: - Delete action
 extension ViewController {
     
@@ -182,7 +181,7 @@ extension ViewController {
     
     fileprivate func getConfirmDeleteAction(_ event: EKEvent) -> UIAlertAction {
         return UIAlertAction(title: "Yes", style: .default, handler: {(alert: UIAlertAction!) -> Void in
-            do{
+            do {
                 try self.eventStore.remove(event, span: .thisEvent, commit: true)
                 self.loadEvents()
                 self.tableView.reloadData()

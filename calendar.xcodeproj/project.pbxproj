@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2807E4BA1DF11FD50060EF5F /* CalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2807E4B91DF11FD50060EF5F /* CalendarCell.swift */; };
 		28F9342E1DEFD379001E8EA8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F9342D1DEFD379001E8EA8 /* AppDelegate.swift */; };
 		28F934301DEFD379001E8EA8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F9342F1DEFD379001E8EA8 /* ViewController.swift */; };
 		28F934331DEFD379001E8EA8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 28F934311DEFD379001E8EA8 /* Main.storyboard */; };
@@ -34,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2807E4B91DF11FD50060EF5F /* CalendarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarCell.swift; sourceTree = "<group>"; };
 		28F9342A1DEFD379001E8EA8 /* calendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = calendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28F9342D1DEFD379001E8EA8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		28F9342F1DEFD379001E8EA8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				28F934341DEFD379001E8EA8 /* Assets.xcassets */,
 				28F934361DEFD379001E8EA8 /* LaunchScreen.storyboard */,
 				28F934391DEFD379001E8EA8 /* Info.plist */,
+				2807E4B91DF11FD50060EF5F /* CalendarCell.swift */,
 			);
 			path = calendar;
 			sourceTree = "<group>";
@@ -261,6 +264,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28F934301DEFD379001E8EA8 /* ViewController.swift in Sources */,
+				2807E4BA1DF11FD50060EF5F /* CalendarCell.swift in Sources */,
 				28F9342E1DEFD379001E8EA8 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -512,6 +516,7 @@
 				28F934541DEFD379001E8EA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		28F934551DEFD379001E8EA8 /* Build configuration list for PBXNativeTarget "calendarTests" */ = {
 			isa = XCConfigurationList;
@@ -520,6 +525,7 @@
 				28F934571DEFD379001E8EA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		28F934581DEFD379001E8EA8 /* Build configuration list for PBXNativeTarget "calendarUITests" */ = {
 			isa = XCConfigurationList;
@@ -528,6 +534,7 @@
 				28F9345A1DEFD379001E8EA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
