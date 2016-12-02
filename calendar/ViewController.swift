@@ -22,24 +22,25 @@ class ViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        requestAccessToCalendar()
         tableView.estimatedRowHeight = 60
         tableView.rowHeight = UITableViewAutomaticDimension
+        addNotification()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        loadEvents()
-        tableView.reloadData()
-        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.storeChanged(_:)), name: NSNotification.Name.EKEventStoreChanged, object: eventStore)
+        requestAccessToCalendar()
     }
     
-    func storeChanged(_ nsNotification: NSNotification) {
-        //print("Method invoked")
-        //print("Event name \(nsNotification)")
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    func requestAccessToCalendar() {
+        eventStore.requestAccess(to: EKEntityType.event, completion: {
+            (accessGranted: Bool, error: Error?) in
+            if accessGranted == true {
+                DispatchQueue.main.sync(execute: {
+                    self.saveCalendar()
+                    self.loadEvents()
+                })
+            }
+        })
     }
     
     func  saveCalendar() {
@@ -77,20 +78,6 @@ class ViewController: UITableViewController {
         })
     }
     
-    func requestAccessToCalendar() {
-        eventStore.requestAccess(to: EKEntityType.event, completion: {
-            (accessGranted: Bool, error: Error?) in
-            if accessGranted == true {
-                DispatchQueue.main.async(execute: {
-                    self.saveCalendar()
-                })
-            } else {
-                DispatchQueue.main.async(execute: {
-                })
-            }
-        })
-    }
-    
     func loadEvents() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -99,11 +86,21 @@ class ViewController: UITableViewController {
         let endDate = dateFormatter.date(from: "2016-12-31")
         let calenderIdentifier = self.userDefaults.string(forKey: "EventTrackerPrimaryCalendar")
         let calendar = self.eventStore.calendar(withIdentifier: calenderIdentifier!)
-        let eventPredicate = eventStore.predicateForEvents(withStart: startDate!, end: endDate!, calendars: [calendar!])
-        events = eventStore.events(matching: eventPredicate).sorted(){
+        let eventPredicate = self.eventStore.predicateForEvents(withStart: startDate!, end: endDate!, calendars: [calendar!])
+        self.events = self.eventStore.events(matching: eventPredicate).sorted(){
             (e1: EKEvent, e2: EKEvent) -> Bool in
             return e1.startDate.compare(e2.startDate) == ComparisonResult.orderedAscending
         }
+        tableView.reloadData()
+    }
+    
+    func addNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.storeChanged(_:)), name: NSNotification.Name.EKEventStoreChanged, object: eventStore)
+    }
+    
+    func storeChanged(_ nsNotification: NSNotification) {
+        // print("Method invoked")
+         print("Event name \(nsNotification.userInfo?["EKEventStoreChangedObjectIDsUserInfoKey"])")
     }
     
     func getDateFormatter() -> DateFormatter {
@@ -117,6 +114,7 @@ class ViewController: UITableViewController {
 extension ViewController: EKEventEditViewDelegate {
     
     func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
+        loadEvents()
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -136,8 +134,10 @@ extension ViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CalendarCell
-        cell.eventDateLabel.text = getDateFormatter().string(from: events[indexPath.row].startDate)
-        cell.locationLabel.text = events[indexPath.row].location
+        let event = events[indexPath.row]
+        print("Event identifier \(event.eventIdentifier)")
+        cell.eventDateLabel.text = getDateFormatter().string(from: event.startDate)
+        cell.locationLabel.text = event.location
         return cell
     }
     
