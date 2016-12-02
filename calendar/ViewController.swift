@@ -14,15 +14,20 @@ import EventKitUI
  * Calender interaction https://developer.apple.com/library/content/documentation/DataManagement/Conceptual/EventKitProgGuide/Introduction/Introduction.html
  * Registering for Notifications https://developer.apple.com/library/content/documentation/DataManagement/Conceptual/EventKitProgGuide/ObservingChanges/ObservingChanges.html#//apple_ref/doc/uid/TP40009765-CH4-SW1
  */
-class ViewController: UIViewController {
+class ViewController: UITableViewController {
     
     let eventStore = EKEventStore()
     let userDefaults = UserDefaults.standard
+    var events = [EKEvent]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         requestAccessToCalendar()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         loadEvents()
+        tableView.reloadData()
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.storeChanged(_:)), name: NSNotification.Name.EKEventStoreChanged, object: eventStore)
     }
     
@@ -93,7 +98,7 @@ class ViewController: UIViewController {
         let calenderIdentifier = self.userDefaults.string(forKey: "EventTrackerPrimaryCalendar")
         let calendar = self.eventStore.calendar(withIdentifier: calenderIdentifier!)
         let eventPredicate = eventStore.predicateForEvents(withStart: startDate!, end: endDate!, calendars: [calendar!])
-        let events = eventStore.events(matching: eventPredicate).sorted(){
+        events = eventStore.events(matching: eventPredicate).sorted(){
             (e1: EKEvent, e2: EKEvent) -> Bool in
             return e1.startDate.compare(e2.startDate) == ComparisonResult.orderedAscending
         }
@@ -111,6 +116,25 @@ extension ViewController: EKEventEditViewDelegate {
     
     func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
         self.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension ViewController {
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return events.count
+        
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.textLabel?.text = events[indexPath.row].title
+        cell.detailTextLabel?.text = String(describing: events[indexPath.row].startDate)
+        return cell
     }
 }
 
