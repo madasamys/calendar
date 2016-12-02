@@ -32,8 +32,8 @@ class ViewController: UITableViewController {
     }
     
     func storeChanged(_ nsNotification: NSNotification) {
-        print("Method invoked")
-        print("Event name \(nsNotification)")
+        //print("Method invoked")
+        //print("Event name \(nsNotification)")
     }
     
     override func didReceiveMemoryWarning() {
@@ -102,12 +102,6 @@ class ViewController: UITableViewController {
             (e1: EKEvent, e2: EKEvent) -> Bool in
             return e1.startDate.compare(e2.startDate) == ComparisonResult.orderedAscending
         }
-        for event in events {
-            print(event.title)
-            print(event.calendar.title)
-            print(event.notes ?? "")
-            print(event.startDate)
-        }
     }
     
 }
@@ -117,7 +111,10 @@ extension ViewController: EKEventEditViewDelegate {
     func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
         self.dismiss(animated: true, completion: nil)
     }
+    
 }
+
+// MARK: - UITableViewDataSource, UITableViewDelegate
 
 extension ViewController {
     
@@ -127,7 +124,6 @@ extension ViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return events.count
-        
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -135,6 +131,49 @@ extension ViewController {
         cell.textLabel?.text = events[indexPath.row].title
         cell.detailTextLabel?.text = String(describing: events[indexPath.row].startDate)
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteAction = getDeleteAction(indexPath)
+        deleteAction.backgroundColor =  UIColor.red
+        return [deleteAction]
+    }
+    
+    
+}
+// MARK: - Delete action
+extension ViewController {
+    
+    fileprivate func getDeleteAction(_ indexPath: IndexPath) -> UITableViewRowAction {
+        return UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "Delete") { (action, indexPath) -> Void in
+            self.isEditing = false
+            let confirmationAlertController = self.getDeleteController(self.events[indexPath.row])
+            confirmationAlertController.addAction(self.getConfirmDeleteAction(self.events[indexPath.row]))
+            confirmationAlertController.addAction(self.getCancelDeleteAction(indexPath))
+            self.present(confirmationAlertController, animated: true, completion: nil)
+        }
+    }
+    
+    fileprivate func getDeleteController(_ event: EKEvent) -> UIAlertController {
+        return UIAlertController(title: "Delete", message: "Are you sure want to delete "+event.title+"?", preferredStyle: UIAlertControllerStyle.alert)
+    }
+    
+    fileprivate func getConfirmDeleteAction(_ event: EKEvent) -> UIAlertAction {
+        return UIAlertAction(title: "Yes", style: .default, handler: {(alert: UIAlertAction!) -> Void in
+            do{
+                try self.eventStore.remove(event, span: .thisEvent, commit: true)
+                self.loadEvents()
+                self.tableView.reloadData()
+            } catch {
+                print("Error occurred while deleting event " + event.title)
+            }
+        })
+    }
+    
+    fileprivate func getCancelDeleteAction(_ indexPath: IndexPath) -> UIAlertAction {
+        return UIAlertAction(title: "no", style: UIAlertActionStyle.default,handler: {(alert: UIAlertAction!) -> Void in
+            self.tableView.reloadRows(at: [IndexPath(row: indexPath.row, section: 0)], with: UITableViewRowAnimation.none)
+        })
     }
 }
 
